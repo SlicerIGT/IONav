@@ -1,0 +1,55 @@
+QAbstractButton,
+QPushButton {
+    border-style: outset; 
+    border-width: 3px; 
+    border-radius: 15px; 
+    background-color: beige; 
+    border-color: gray; 
+    font-size: 12pt;
+    max-height: 100px;
+    max-width: 150px;
+    min-height: 100px;
+    min-width: 150px;
+    qproperty-iconSize: 64px 64px;
+}
+
+QAbstractButton:pressed,
+QPushButton:pressed {
+    border-style: outset; 
+    border-width: 3px; 
+    border-radius: 15px; 
+    background-color: gray; 
+    border-color: gray; 
+    font-size: 12pt;
+    max-height: 100px;
+    max-width: 150px;
+    min-height: 100px;
+    min-width: 150px;
+    qproperty-iconSize: 64px 64px;
+}
+
+QFrame {
+    background-color: #b80000;
+    border-color: #b80000;
+    color: #ffffff
+}
+
+QLabel {
+    font-size: 10pt;
+}
+
+QDockWidget{
+    color: #ffffff;
+    font-size: 12pt;
+}
+
+QDockWidget:title {
+    background-color: #b80000;
+    text-align: center;
+}
+
+QMenu,
+QMenu::item,
+QMenu::item:selected {
+    font-size: 12pt;
+}
