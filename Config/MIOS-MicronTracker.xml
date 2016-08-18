@@ -1,0 +1,46 @@
+<PlusConfiguration version="2.2">
+
+  <DataCollection StartupDelaySec="1.0" >
+    <DeviceSet 
+      Name="MIOS MicronTracker"
+      Description="MicronTracker use for the Mobile Image Overlay System" 
+    />
+    <Device
+      Id="TrackerDevice"
+      Type="MicronTracker"
+      AcquisitionRate="5"
+      LocalTimeOffsetSec="0.0"
+	    ToolReferenceFrame="Tracker"
+	    TemplateDirectory="Markers"
+      IniFile = "MicronTracker.ini" >
+      <DataSources>
+		    <DataSource Type="Tool" Id="ViewLeft" PortName="Reference" BufferSize="500" AveragedItemsForFiltering="10"/>
+        <DataSource Type="Tool" Id="ViewRight" PortName="Pointer" BufferSize="500" AveragedItemsForFiltering="10"/>
+		    <DataSource Type="Tool" Id="Reference" PortName="UltrasoundProbe" BufferSize="500" AveragedItemsForFiltering="10"/>
+      </DataSources>
+      <OutputChannels>
+        <OutputChannel Id="TrackerStream" >
+          <DataSource Id="ViewLeft"/>
+          <DataSource Id="ViewRight"/>
+		      <DataSource Id="Reference"/>
+        </OutputChannel>
+      </OutputChannels>
+    </Device>
+  </DataCollection>
+  <PlusOpenIGTLinkServer
+    MaxNumberOfIgtlMessagesToSend="1"
+    MaxTimeSpentWithProcessingMs="50"
+    ListeningPort="18944"
+    SendValidTransformsOnly="true" 
+    OutputChannelId="TrackerStream" > 
+    <DefaultClientInfo> 
+	  <MessageTypes>
+		<Message Type="TRANSFORM" />
+	  </MessageTypes>
+	  <TransformNames>
+		<Transform Name="ViewLeftToReference" />
+		<Transform Name="ViewRightToReference" />
+	  </TransformNames>
+    </DefaultClientInfo>
+  </PlusOpenIGTLinkServer>
+</PlusConfiguration>

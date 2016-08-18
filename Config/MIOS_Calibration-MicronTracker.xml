@@ -1,0 +1,60 @@
+<PlusConfiguration version="2.2">
+
+  <DataCollection StartupDelaySec="1.0">
+    <DeviceSet 
+      Name="MIOS MicronTracker Calibration"
+      Description="MicronTracker Calibration for the Mobile Image Overlay System" 
+    />
+    <Device
+      Id="TrackerDevice"
+      Type="MicronTracker"
+      AcquisitionRate="5"
+      LocalTimeOffsetSec="0.0"
+      ToolReferenceFrame="Tracker"
+      TemplateDirectory="Markers"
+      IniFile = "MicronTracker.ini">
+      <DataSources>
+        <DataSource Type="Tool" Id="ViewLeft" PortName="Reference" BufferSize="500" AveragedItemsForFiltering="10"/>
+        <DataSource Type="Tool" Id="ViewRight" PortName="Pointer" BufferSize="500" AveragedItemsForFiltering="10"/>
+        <DataSource Type="Tool" Id="Reference" PortName="UltrasoundProbe" BufferSize="500" AveragedItemsForFiltering="10"/>
+        <DataSource Type="Tool" Id="Needle" PortName="SpineGuide" BufferSize="500" AveragedItemsForFiltering="10"/>
+	<DataSource Type="Tool" Id="CMarker" PortName="MIOSScreen" BufferSize="500" AveragedItemsForFiltering="10"/>
+	<DataSource Type="Tool" Id="VCMarker" PortName="MIOSVirtualScreen" BufferSize="500" AveragedItemsForFiltering="10"/>
+      </DataSources>
+      <OutputChannels>
+        <OutputChannel Id="TrackerStream">
+          <DataSource Id="ViewLeft"/>
+          <DataSource Id="ViewRight"/>
+          <DataSource Id="Reference"/>
+          <DataSource Id="Needle"/>
+	      <DataSource Id="CMarker"/>
+	      <DataSource Id="VCMarker"/>
+        </OutputChannel>
+      </OutputChannels>
+    </Device>
+  </DataCollection>
+  <PlusOpenIGTLinkServer
+    MaxNumberOfIgtlMessagesToSend="1"
+    MaxTimeSpentWithProcessingMs="50"
+    ListeningPort="18944"
+    SendValidTransformsOnly="true" 
+    OutputChannelId="TrackerStream"> 
+    <DefaultClientInfo> 
+    <MessageTypes>
+    <Message Type="TRANSFORM"/>
+    </MessageTypes>
+    <TransformNames>
+    <!-- Display Screen To Viewbox (Left and Right) Transform -->
+    <Transform Name="CMarkerToViewRight"/>
+    <Transform Name="CMarkerToViewLeft"/>
+    <!-- Virtual Screen To Display Screen Transform -->
+    <Transform Name="VCMarkerToCMarker"/>
+    <!-- Viewbox (Left and Right) To Reference Transform -->
+    <Transform Name="ViewLeftToReference"/>
+    <Transform Name="ViewRightToReference"/>
+    <!-- Needle To Reference Transform -->
+    <Transform Name="NeedleToReference"/>		
+    </TransformNames>
+    </DefaultClientInfo>
+  </PlusOpenIGTLinkServer>
+</PlusConfiguration>
