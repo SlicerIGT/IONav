@@ -62,7 +62,7 @@ class IONavWidget(GuideletWidget):
     self.trackerSelectLabel = qt.QLabel(" Tracking Device: ")
     self.trackerSelectLabel.setSizePolicy(qt.QSizePolicy(qt.QSizePolicy.Maximum, qt.QSizePolicy.Fixed))
     self.trackerSelectHBox.addWidget(self.trackerSelectLabel)
-    self.trackerSelectHBox.addWidget(self.trackerSelectComboBox)  
+    self.trackerSelectHBox.addWidget(self.trackerSelectComboBox)
 
     self.launcherFormLayout.addRow(self.trackerSelectHBox)
 
@@ -80,7 +80,7 @@ class IONavWidget(GuideletWidget):
 
     self.patientVolumeHBox = qt.QHBoxLayout()
     self.patientVolumeHBox.addWidget(qt.QLabel(" Patient Volume:  "))
-    self.patientVolumeHBox.addWidget(self.patientVolumeComboBox)  
+    self.patientVolumeHBox.addWidget(self.patientVolumeComboBox)
 
     self.launcherFormLayout.addRow(self.patientVolumeHBox)
 
@@ -100,7 +100,7 @@ class IONavWidget(GuideletWidget):
 
     self.rasFiducialHBox = qt.QHBoxLayout()
     self.rasFiducialHBox.addWidget(qt.QLabel(" RAS Fiducials:    "))
-    self.rasFiducialHBox.addWidget(self.rasFiducialComboBox)  
+    self.rasFiducialHBox.addWidget(self.rasFiducialComboBox)
 
     self.launcherFormLayout.addRow(self.rasFiducialHBox)
 
@@ -202,17 +202,17 @@ class IONavGuidelet(Guidelet):
 
     self.ultrasoundCollapsibleButton.setProperty('collapsed', True)
     self.advancedCollapsibleButton.setProperty('collapsed', True)
-    
+
     return featurePanelList
 
 
   def __del__(self):
-    self.cleanup()
+    self.preCleanup()
 
 
-  def cleanup(self):
-    Guidelet.cleanup(self)
-    logging.debug('cleanup')
+  def preCleanup(self):
+    Guidelet.preCleanup(self)
+    logging.debug('preCleanup')
 
 
   def setupConnections(self):
@@ -243,7 +243,7 @@ class IONavGuidelet(Guidelet):
     self.deleteFiducialButton.connect('triggered()', self.onDeleteLastFiducialClicked)
     self.deleteAllFiducialButton.connect('triggered()', self.onDeleteAllFiducialsClicked)
     self.clearRef2RasButton.connect('triggered()', self.onClearRef2RasClicked)
-    
+
     self.toolbarPatientRegistrationTimer.connect('timeout()', self.onPatientRegistrationSamplingTimeout)
 
     self.showSlicerInterfaceButton.connect('triggered()', self.onShowSlicerInterfaceClicked)
@@ -334,7 +334,7 @@ class IONavGuidelet(Guidelet):
         self.needleModelToNeedleTip.SetMatrixTransformToParent(m)
       slicer.mrmlScene.AddNode(self.needleModelToNeedleTip)
 
-    # MicronTracker Transforms Setup 
+    # MicronTracker Transforms Setup
     if str(slicer.modules.IONavWidget.trackerSelectComboBox.currentText) == "Micron Tracker":
 
       # Calibration Marker to ViewLeft.
@@ -395,9 +395,9 @@ class IONavGuidelet(Guidelet):
         self.viewLeftToReference.SetName("ViewLeftToReference")
         slicer.mrmlScene.AddNode(self.viewLeftToReference)
 
-    # RealSense Transforms Setup 
+    # RealSense Transforms Setup
     if str(slicer.modules.IONavWidget.trackerSelectComboBox.currentText) == "Intel RealSense":
-      
+
       # Temporary Marker to Tracker.
       self.temporaryMarkerToTracker = slicer.util.getNode('TMarkerToTracker')
       if not self.temporaryMarkerToTracker:
@@ -427,7 +427,7 @@ class IONavGuidelet(Guidelet):
         self.virtualCalibrationMarkerToCalibrationMarker.SetName("VCMarkerToCMarker")
         m = self.logic.readTransformFromSettings('VCMarkerToCMarker', self.configurationName)
         if m is None:
-          m = self.logic.createMatrixFromString('-0.999637 -0.0206521 0.0173021 -0.128203 0.020569 -0.999776 -0.00496755 366.664 0.0174009 -0.00460986 0.999838 -0.402251 0 0 0 1') 
+          m = self.logic.createMatrixFromString('-0.999637 -0.0206521 0.0173021 -0.128203 0.020569 -0.999776 -0.00496755 366.664 0.0174009 -0.00460986 0.999838 -0.402251 0 0 0 1')
         self.virtualCalibrationMarkerToCalibrationMarker.SetMatrixTransformToParent(m)
         slicer.mrmlScene.AddNode(self.virtualCalibrationMarkerToCalibrationMarker)
 
@@ -509,7 +509,7 @@ class IONavGuidelet(Guidelet):
     self.needleBaseToNeedle.SetAndObserveTransformNodeID(self.needleToReference.GetID())
     self.needleModelToNeedleTip.SetAndObserveTransformNodeID(self.needleTipToNeedle.GetID())
     self.needleModel_NeedleTip.SetAndObserveTransformNodeID(self.needleModelToNeedleTip.GetID())
-    
+
     # Build MicronTracker Viewbox hierarchy -- Starts on right viewer by default.
     if str(slicer.modules.IONavWidget.trackerSelectComboBox.currentText) == "Micron Tracker":
       self.viewRightToReference.SetAndObserveTransformNodeID(self.referenceToRas.GetID())
@@ -548,7 +548,7 @@ class IONavGuidelet(Guidelet):
     self.toolbarLayout = qt.QFormLayout(self.toolbarSettingsPanel)
     self.hbox = qt.QHBoxLayout()
     self.hbox.setAlignment(qt.Qt.AlignCenter)
-    
+
     if str(slicer.modules.IONavWidget.trackerSelectComboBox.currentText) == "Micron Tracker":
       self.hbox.setSpacing(75)
 
@@ -587,8 +587,8 @@ class IONavGuidelet(Guidelet):
     self.startRightNavigationButton = qt.QAction("Right View", self.startLeftRightMenu)
     self.startRightNavigationButton.setIcon(qt.QIcon(self.moduleIconsDirectoryPath + 'RightButton.png'))
 
-    self.startLeftRightMenu.addAction(self.startLeftNavigationButton) 
-    self.startLeftRightMenu.addAction(self.startRightNavigationButton) 
+    self.startLeftRightMenu.addAction(self.startLeftNavigationButton)
+    self.startLeftRightMenu.addAction(self.startRightNavigationButton)
 
     self.hbox.addWidget(self.startLeftRightNavigationButton)
 
@@ -638,13 +638,13 @@ class IONavGuidelet(Guidelet):
     self.clearRef2RasButton.setIcon(qt.QIcon(self.moduleIconsDirectoryPath + 'Delete.png'))
 
     self.patientRegistrationMenu.addAction(self.beginPatientRegistrationButton)
-    self.patientRegistrationMenu.addSeparator() 
-    self.patientRegistrationMenu.addAction(self.addReferenceFiducialButton) 
     self.patientRegistrationMenu.addSeparator()
-    self.patientRegistrationMenu.addAction(self.deleteFiducialButton) 
+    self.patientRegistrationMenu.addAction(self.addReferenceFiducialButton)
+    self.patientRegistrationMenu.addSeparator()
+    self.patientRegistrationMenu.addAction(self.deleteFiducialButton)
     self.patientRegistrationMenu.addAction(self.deleteAllFiducialButton)
     self.patientRegistrationMenu.addSeparator()
-    self.patientRegistrationMenu.addAction(self.clearRef2RasButton) 
+    self.patientRegistrationMenu.addAction(self.clearRef2RasButton)
 
     self.hbox.addWidget(self.patientRegistrationButton)
 
@@ -662,10 +662,10 @@ class IONavGuidelet(Guidelet):
     self.saveButton = qt.QAction("Save Scene", self.settingsMenu)
     self.saveButton.setIcon(qt.QIcon(self.moduleIconsDirectoryPath + 'SaveScene.png'))
 
-    self.settingsMenu.addAction(self.showSlicerInterfaceButton) 
-    self.settingsMenu.addAction(self.showFullScreenButton) 
+    self.settingsMenu.addAction(self.showSlicerInterfaceButton)
+    self.settingsMenu.addAction(self.showFullScreenButton)
     self.settingsMenu.addSeparator()
-    self.settingsMenu.addAction(self.saveButton) 
+    self.settingsMenu.addAction(self.saveButton)
 
     self.hbox.addWidget(self.settingsMenuButton)
 
@@ -750,7 +750,7 @@ class IONavGuidelet(Guidelet):
     self.calibrationMarkerToViewboxLeft.SetAndObserveTransformNodeID(self.viewLeftToReference.GetID())
     self.virtualCalibrationMarkerToCalibrationMarker.SetAndObserveTransformNodeID(self.calibrationMarkerToViewboxLeft.GetID())
     self.calibrationVolumeToVirtualCalibrationMarker.SetAndObserveTransformNodeID(self.virtualCalibrationMarkerToCalibrationMarker.GetID())
-    self.onSystemStart()    
+    self.onSystemStart()
 
 
   def onSystemRightSideClicked(self):
@@ -776,7 +776,7 @@ class IONavGuidelet(Guidelet):
     self.calibrationMarkerToViewboxLeft.SetAndObserveTransformNodeID('')
     self.virtualCalibrationMarkerToCalibrationMarker.SetAndObserveTransformNodeID('')
     self.calibrationVolumeToVirtualCalibrationMarker.SetAndObserveTransformNodeID('')
-    
+
 
   def onStartSystemCalibrationClicked(self):
     self.onNewButtonClicked()
@@ -1006,7 +1006,7 @@ class IONavGuidelet(Guidelet):
     self.labelText = "Capturing stopped. Updated transforms: "
     if not self.updatedTransforms:
       self.labelText += "None."
-    else: 
+    else:
       self.labelText += (", ".join(self.updatedTransforms) + ".")
 
     self.toolbarLabel.setText(self.labelText)
@@ -1203,7 +1203,7 @@ class IONavGuidelet(Guidelet):
     self.labelText = "Capturing stopped. Updated transforms: "
     if not self.updatedTransforms:
       self.labelText += "None."
-    else: 
+    else:
       self.labelText += (", ".join(self.updatedTransforms) + ".")
 
     self.toolbarLabel.setText(self.labelText)
@@ -1365,7 +1365,7 @@ class IONavGuidelet(Guidelet):
     logging.debug("Adding reference fiducial.")
     if self.fiducialsCollected < self.fiducialsToCollect:
       self.startPatientRegistration()
-    else: 
+    else:
       self.toolbarLabel.setText("All reference points collected!")
 
 
